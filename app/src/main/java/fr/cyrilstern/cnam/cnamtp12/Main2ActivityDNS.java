@@ -14,6 +14,7 @@ import java.net.ServerSocket;
 
 public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.RegistrationListener{
     private TextView tvServiceInfo;
+    private NsdServiceInfo serviceInfo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,10 +34,12 @@ public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.R
     @Override
     protected void onResume() {
         super.onResume();
-    }
-    private void startServiceDerverDNS_SD(){
 
-        NsdManager nsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
+    }
+    private NsdManager nsdManager;
+    public void startServiceDerverDNS_SD(){
+
+        nsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
         try {
             mServerSocket = new ServerSocket(0); //socket
         } catch (IOException e) {
@@ -45,7 +48,7 @@ public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.R
         }
         mLocalPort = mServerSocket.getLocalPort();  //register port find in local variable to give to the client whaen resolution
         if(sdk>= Build.VERSION_CODES.KITKAT){
-        NsdServiceInfo serviceInfo = new NsdServiceInfo();  //service provide to ecveery wone
+        serviceInfo = new NsdServiceInfo();  //service provide to ecveery wone
         serviceInfo.setServiceName(SERVICE_NAME);
         serviceInfo.setServiceType(SERVICE_TYPE);
         serviceInfo.setPort(mLocalPort);
@@ -53,6 +56,11 @@ public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.R
         }
 
 
+
+    }
+    public void onUnregisterServiceD(){
+
+            if(nsdManager!=null) nsdManager.unregisterService(this);
 
     }
 
@@ -75,7 +83,7 @@ public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.R
 
         }
     };
-    mNsdManager.resolveService(serviceInfo, mResolveListener);
+   // mNsdManager.resolveService(serviceInfo, mResolveListener);
 }
 
 
@@ -90,7 +98,8 @@ public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.R
     }
 
     @Override
-    public void onServiceRegistered(NsdServiceInfo serviceInfo) {
+    public void onServiceRegistered(NsdServiceInfo serviceInforetour) {
+        serviceInfo.setServiceName(serviceInforetour.getServiceName());   //on recupere le name du service ou cas ou il change
 
     }
 

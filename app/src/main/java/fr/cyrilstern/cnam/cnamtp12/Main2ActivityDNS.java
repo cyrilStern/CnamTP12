@@ -1,6 +1,8 @@
 package fr.cyrilstern.cnam.cnamtp12;
 
+import android.app.IntentService;
 import android.content.Context;
+import android.content.Intent;
 import android.net.LocalServerSocket;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
@@ -10,9 +12,11 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
+import java.net.Socket;
 
-public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.RegistrationListener{
+public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.RegistrationListener, NsdManager.DiscoveryListener{
     private TextView tvServiceInfo;
     private NsdServiceInfo serviceInfo;
     @Override
@@ -38,7 +42,10 @@ public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.R
     }
     private NsdManager nsdManager;
     public void startServiceDerverDNS_SD(){
-
+        
+        Intent serviceSendMessage = new Intent();
+        serviceSendMessage.setAction("Start_SERVER_DSN");
+        startService(serviceSendMessage);
         nsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
         try {
             mServerSocket = new ServerSocket(0); //socket
@@ -48,24 +55,106 @@ public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.R
         }
         mLocalPort = mServerSocket.getLocalPort();  //register port find in local variable to give to the client whaen resolution
         if(sdk>= Build.VERSION_CODES.KITKAT){
-        serviceInfo = new NsdServiceInfo();  //service provide to ecveery wone
+        serviceInfo = new NsdServiceInfo();  //service provide to ecveery one
         serviceInfo.setServiceName(SERVICE_NAME);
         serviceInfo.setServiceType(SERVICE_TYPE);
         serviceInfo.setPort(mLocalPort);
-            nsdManager.registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, this);
+        nsdManager.registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, this);
         }
 
 
 
     }
+
+
+    ////////////////////////////////
+    ////////////////////////////////
+    ///////   SERVER  /////////////
+    //////////////////////////////
+
     public void onUnregisterServiceD(){
 
             if(nsdManager!=null) nsdManager.unregisterService(this);
 
     }
 
+    @Override
+    public void onServiceLost(NsdServiceInfo serviceInfo) {
+
+    }
 
 
+    @Override
+    public void onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
+
+    }
+
+    @Override
+    public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
+
+    }
+
+    @Override
+    public void onServiceRegistered(final NsdServiceInfo serviceInforetour) {
+        serviceInfo.setServiceName(serviceInforetour.getServiceName());   //on recupere le name du service ou cas ou il change
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Socket socket = new Socket(serviceInforetour.getHost(),serviceInforetour.getPort());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+
+    }
+
+    @Override
+    public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
+
+    }
+
+
+    ///////////////////////////////////////////
+    //////////////////////////////////////////
+    /////////  CLIENT//////////////////////////
+    /////////////////////////////////////////
+
+    private NsdManager nsdManagerClient;
+    public void startDiscoring(){
+        nsdManagerClient = (NsdManager) getSystemService(Context.NSD_SERVICE);
+        nsdManagerClient.discoverServices(SERVICE_TYPE,NsdManager.PROTOCOL_DNS_SD,this);
+
+    }
+    public void stopDiscovering(){
+            if(nsdManagerClient != null) nsdManagerClient.stopServiceDiscovery(this);
+    }
+    public void sedMessage(){
+
+    }
+
+    @Override
+    public void onStartDiscoveryFailed(String serviceType, int errorCode) {
+
+    }
+
+    @Override
+    public void onStopDiscoveryFailed(String serviceType, int errorCode) {
+
+    }
+
+    @Override
+    public void onDiscoveryStarted(String serviceType) {
+
+    }
+
+    @Override
+    public void onDiscoveryStopped(String serviceType) {
+
+    }
+    @Override
     public void onServiceFound(NsdServiceInfo serviceInfo) {
 
         serviceInfo.getServiceName();
@@ -83,28 +172,7 @@ public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.R
 
         }
     };
-   // mNsdManager.resolveService(serviceInfo, mResolveListener);
+    nsdManagerClient.resolveService(serviceInfo, mResolveListener);
 }
 
-
-    @Override
-    public void onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
-
-    }
-
-    @Override
-    public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
-
-    }
-
-    @Override
-    public void onServiceRegistered(NsdServiceInfo serviceInforetour) {
-        serviceInfo.setServiceName(serviceInforetour.getServiceName());   //on recupere le name du service ou cas ou il change
-
-    }
-
-    @Override
-    public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
-
-    }
 }

@@ -20,7 +20,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-     
+            <meta-data android:resource="@xml/xml_tech_nfc"
+                android:name="android.nfc.action.TECH_DISCOVERED" />
+
         </activity>
         <activity android:name=".Main2ActivityDNS"></activity>
     </application>

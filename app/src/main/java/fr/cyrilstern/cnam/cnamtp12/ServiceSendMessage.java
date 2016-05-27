@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
 import android.support.annotation.Nullable;
 
 import java.io.IOException;
@@ -22,10 +25,10 @@ public class ServiceSendMessage extends Service implements NsdManager.Registrati
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      *
-     * @param name Used to name the worker thread, important only for debugging.
+
      */
     public ServiceSendMessage(String name) {
-        super(name);
+        super();
         nsdManager  = (NsdManager) this.getSystemService(Context.NSD_SERVICE);                  //getSystemService(getApplicationContext().NSD_SERVICE);
     }
     private NsdManager nsdManager;
@@ -34,13 +37,18 @@ public class ServiceSendMessage extends Service implements NsdManager.Registrati
     private int mLocalPort;
     private int sdk = android.os.Build.VERSION.SDK_INT;
     private NsdServiceInfo serviceInfo;
+    private Message message;
+    private Messenger messenger;
 
 
+        private ServerSocket mServerSocket;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
-        private ServerSocket mServerSocket;
+        super.onStartCommand(intent, flags, startId);
+        Bundle bundle = intent.getExtras();
+        messenger = (Messenger) bundle.get("messager");
+        message = Message.obtain();
 
         try {
             mServerSocket = new ServerSocket(0); //socket
@@ -55,7 +63,7 @@ public class ServiceSendMessage extends Service implements NsdManager.Registrati
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+            return START_STICKY;
     }
 
     @Nullable
@@ -64,10 +72,6 @@ public class ServiceSendMessage extends Service implements NsdManager.Registrati
         return null;
     }
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
-
-    }
 
     @Override
     public void onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {

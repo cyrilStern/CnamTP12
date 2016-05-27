@@ -7,6 +7,9 @@ import android.net.LocalServerSocket;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -108,13 +111,18 @@ public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.R
 
             }
         }).start();
-
     }
 
     @Override
     public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
 
     }
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+        }
+    };
 
 
     ///////////////////////////////////////////
@@ -123,13 +131,23 @@ public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.R
     /////////////////////////////////////////
 
     private NsdManager nsdManagerClient;
+    private Intent intent;
     public void startDiscoring(){
         nsdManagerClient = (NsdManager) getSystemService(Context.NSD_SERVICE);
         nsdManagerClient.discoverServices(SERVICE_TYPE,NsdManager.PROTOCOL_DNS_SD,this);
-
+        Messenger messager = new Messenger(handler);
+        intent = new Intent();
+        intent.setClass(this,ServiceSendMessage.class);
+        intent.putExtra("messager", messager);
+        startService(intent);
     }
+
     public void stopDiscovering(){
-            if(nsdManagerClient != null) nsdManagerClient.stopServiceDiscovery(this);
+        if( intent != null) {
+            intent = new Intent(this,ServiceSendMessage.class);
+            stopService(intent);
+        }
+        if(nsdManagerClient != null) nsdManagerClient.stopServiceDiscovery(this);
     }
     public void sedMessage(){
 

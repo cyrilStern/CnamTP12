@@ -121,6 +121,8 @@ public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.R
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            //bundle.get();
         }
     };
 

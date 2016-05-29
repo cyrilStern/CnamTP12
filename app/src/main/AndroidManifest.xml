@@ -3,6 +3,7 @@
     package="fr.cyrilstern.cnam.cnamtp12">
 
     <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature
         android:name="android.hardware.nfc"
@@ -15,16 +16,26 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/xml_tech_nfc" />
+        </activity>
+        <activity android:name=".Main2ActivityDNS">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data android:resource="@xml/xml_tech_nfc"
-                android:name="android.nfc.action.TECH_DISCOVERED" />
-
         </activity>
-        <activity android:name=".Main2ActivityDNS"></activity>
+
+        <service
+            android:name=".ServerDSNservice"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".ClientServiceDSN"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

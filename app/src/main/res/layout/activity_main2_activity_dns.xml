@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:text="stop service"
         android:id="@+id/button2"
-        android:onClick="onUnregisterServiceD"
+        android:onClick="stopServiceServerDND_SD"
         android:backgroundTint="@color/colorPrimaryDark"
         android:layout_below="@+id/button"
         android:layout_alignParentLeft="true"

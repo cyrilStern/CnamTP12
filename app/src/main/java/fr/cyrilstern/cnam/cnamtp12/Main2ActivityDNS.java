@@ -1,42 +1,71 @@
 package fr.cyrilstern.cnam.cnamtp12;
 
-import android.app.IntentService;
-import android.content.Context;
 import android.content.Intent;
-import android.net.LocalServerSocket;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
+
+import fr.cyrilstern.cnam.cnamtp12.javaPojo.ServiceServeurCommunication;
 
 public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.RegistrationListener, NsdManager.DiscoveryListener{
     private TextView tvServiceInfo;
     private NsdServiceInfo serviceInfo;
+    private TextView textViewNdsServiceStart;
+    private TextView textViewServiceRunning;
+    private TextView textViewOnServiceRegistered;
+    private TextView textViewMessageerceivedFromClient;
+    private TextView textViewMyRunnableservice;
+    private TextView textViewNsdServiceStoped;
+    private TextView textViewOnServiceRegisterd;
+    private TextView textViewMyRuunnableServiceError;
+    private String stateserveur;
+    private ServerSocket socketServer;
+    private int socketServerPort;
+
+
+
+    private void initView(){
+        textViewNdsServiceStart = (TextView) findViewById(R.id.ndsServiceStarted);
+        textViewServiceRunning = (TextView) findViewById(R.id.serviceState);
+        textViewOnServiceRegistered = (TextView) findViewById(R.id.onServiceRegistered);
+        textViewMessageerceivedFromClient = (TextView) findViewById(R.id.messageReceivingFromClient);
+        textViewMyRunnableservice = (TextView) findViewById(R.id.myRunnableServiceService);
+        textViewNsdServiceStoped = (TextView) findViewById(R.id.ndsServiceStarted);
+        textViewOnServiceRegisterd = (TextView) findViewById(R.id.onServiceUnregistered);
+        textViewMyRuunnableServiceError = (TextView) findViewById(R.id.myrunnableServiceRunError);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2_activity_dns);
+
         init();
+        initView();
     }
 
     private void init(){
+
         tvServiceInfo = (TextView) findViewById(R.id.textViewServiceinfo);
+
     }
-    private String SERVICE_NAME = "Deptinfo";
     private String SERVICE_TYPE = "_http._tcp";
-    private ServerSocket mServerSocket;
-    private int mLocalPort;
-    private int sdk = android.os.Build.VERSION.SDK_INT;
 
     @Override
     protected void onResume() {
@@ -44,29 +73,17 @@ public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.R
 
     }
     private NsdManager nsdManager;
-    public void startServiceDerverDNS_SD(){
-        
-        Intent serviceSendMessage = new Intent();
-        serviceSendMessage.setAction("Start_SERVER_DSN");
-        startService(serviceSendMessage);
-        nsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
-        try {
-            mServerSocket = new ServerSocket(0); //socket
-        } catch (IOException e) {
-            tvServiceInfo.setText("NSD Service Error:\n" + e.toString());
-            e.printStackTrace();
-        }
-        mLocalPort = mServerSocket.getLocalPort();  //register port find in local variable to give to the client whaen resolution
-        if(sdk>= Build.VERSION_CODES.KITKAT){
-        serviceInfo = new NsdServiceInfo();  //service provide to ecveery one
-        serviceInfo.setServiceName(SERVICE_NAME);
-        serviceInfo.setServiceType(SERVICE_TYPE);
-        serviceInfo.setPort(mLocalPort);
-        nsdManager.registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, this);
-        }
+    public void startServiceDerverDNS_SD(View view){
+        Messenger messager = new Messenger(handler);
+        Intent serviceServeurDSN = new Intent(this,ServerDSNservice.class);
+        serviceServeurDSN.setAction("Start_SERVER_DSN");
+        serviceServeurDSN.putExtra("message",messager);
+        this.startService(serviceServeurDSN);
 
-
-
+    }
+    public void stopServiceServerDND_SD(View view){
+        Intent intent = new Intent(this,ServiceServeurCommunication.class);
+        stopService(intent);
     }
 
 
@@ -99,6 +116,7 @@ public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.R
 
     @Override
     public void onServiceRegistered(final NsdServiceInfo serviceInforetour) {
+        Log.i("register", (String.valueOf(serviceInforetour.getPort())));
         serviceInfo.setServiceName(serviceInforetour.getServiceName());   //on recupere le name du service ou cas ou il change
         new Thread(new Runnable() {
             @Override
@@ -122,36 +140,88 @@ public class Main2ActivityDNS extends AppCompatActivity  implements NsdManager.R
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             Bundle bundle = msg.getData();
-            //bundle.get();
+            ServiceServeurCommunication serviceServeurCommunication = (ServiceServeurCommunication) bundle.getSerializable("serveurInfo");
+            if(serviceServeurCommunication.getState())  stateserveur = "actif";
+            else if(!serviceServeurCommunication.getState()) stateserveur = "inactif";
+            if(serviceServeurCommunication !=null){
+            textViewNdsServiceStart.setText(stateserveur);
+            textViewNdsServiceStart.setText("le service à débuté sur le port : " + serviceServeurCommunication.getPort());
+            textViewMyRunnableservice.setText(serviceServeurCommunication.getAdress());
+            }
+        }
+    };
+    private Handler handlerClient = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+
+            ServiceServeurCommunication serviceClientCommunication = (ServiceServeurCommunication) bundle.getSerializable("clientInfo");
+            textViewMessageerceivedFromClient.setText("ouioui vas y " + bundle.getString("serveurSetSocketMessage"));
+            socketServerPort = bundle.getInt("serverSocket");
+            Log.i("etouivasy2", String.valueOf(socketServerPort));
+
+          //  if(serviceClientCommunication.getState())  stateserveur = "actif";
+          //  else if(!serviceClientCommunication.getState()) stateserveur = "inactif";
         }
     };
 
 
-    ///////////////////////////////////////////
-    //////////////////////////////////////////
-    /////////  CLIENT//////////////////////////
+    /////////////////////////////////////////
+    /////////////////////////////////////////
+    /////////  CLIENT ///////////////////////
     /////////////////////////////////////////
 
     private NsdManager nsdManagerClient;
-    private Intent intent;
-    public void startDiscoring(){
-        nsdManagerClient = (NsdManager) getSystemService(Context.NSD_SERVICE);
-        nsdManagerClient.discoverServices(SERVICE_TYPE,NsdManager.PROTOCOL_DNS_SD,this);
-        Messenger messager = new Messenger(handler);
-        intent = new Intent();
-        intent.setClass(this,ServiceSendMessage.class);
-        intent.putExtra("messager", messager);
-        startService(intent);
+    private Intent intentClient;
+    public void startDiscoring(View view){
+        Messenger messager = new Messenger(handlerClient);
+        intentClient = new Intent();
+        intentClient.setClass(this,ClientServiceDSN.class);
+        intentClient.putExtra("message2", messager);
+        startService(intentClient);
     }
 
-    public void stopDiscovering(){
-        if( intent != null) {
-            intent = new Intent(this,ServiceSendMessage.class);
-            stopService(intent);
+    public void stopDiscovering(View view){
+        if( intentClient != null) {
+            intentClient = new Intent(this,ServiceServeurCommunication.class);
+            stopService(intentClient);
         }
         if(nsdManagerClient != null) nsdManagerClient.stopServiceDiscovery(this);
     }
-    public void sedMessage(){
+    private static final String HOST = "10.0.2.2";
+    public void sedMessage(View view){
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                    try {
+                        // Create Socket instance
+                        // Get input buffer
+
+                            Log.i("etouivasy2", "ecrit à ce moment");
+                            Socket socket = new Socket("192.168.1.12",socketServerPort);
+                            // Get output buffer
+                            BufferedWriter writer = new BufferedWriter(
+                                    new OutputStreamWriter(socket.getOutputStream()));
+                            // Write output
+                            writer.write("这是一段来自服务器的问候：Hello沃德！");
+                            writer.flush();
+                            writer.close();
+
+
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+
+
+            }
+
+
+        }).start();
 
     }
 

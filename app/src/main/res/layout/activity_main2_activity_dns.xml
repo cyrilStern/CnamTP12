@@ -10,209 +10,199 @@
     tools:context="fr.cyrilstern.cnam.cnamtp12.Main2ActivityDNS">
 
     <Button
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="start service"
-        android:id="@+id/button"
-        android:onClick="startServiceDerverDNS_SD"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/ndsServiceStarted"
         android:layout_toRightOf="@+id/ndsServiceStarted"
-        android:layout_toEndOf="@+id/ndsServiceStarted" />
+        android:onClick="startServiceDerverDNS_SD"
+        android:text="start service" />
 
     <Button
+        android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="stop service"
-        android:id="@+id/button2"
-        android:onClick="stopServiceServerDND_SD"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:layout_below="@+id/button"
+        android:layout_alignEnd="@+id/button"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/button"
-        android:layout_alignEnd="@+id/button" />
+        android:layout_below="@+id/button"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:onClick="stopServiceServerDND_SD"
+        android:text="stop service" />
 
     <Button
+        android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="start discovering"
-        android:id="@+id/button3"
-        android:onClick="startDiscoring"
-        android:layout_centerVertical="true"
+        android:layout_alignEnd="@+id/button2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/button2"
-        android:layout_alignEnd="@+id/button2" />
+        android:layout_centerVertical="true"
+        android:onClick="startDiscoring"
+        android:text="start discovering" />
     <Button
+        android:id="@+id/button4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="stop discovering"
-        android:onClick="stopDiscovering"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:id="@+id/button4"
-        android:layout_below="@+id/button3"
+        android:layout_alignEnd="@+id/button3"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/button3"
-        android:layout_alignEnd="@+id/button3" />
+        android:layout_below="@+id/button3"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:onClick="stopDiscovering"
+        android:text="stop discovering" />
 
     <Button
+        android:id="@+id/button5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="send message"
-        android:id="@+id/button5"
-        android:onClick="sedMessage"
-        android:layout_below="@+id/button4"
-        android:layout_alignRight="@+id/button4"
         android:layout_alignEnd="@+id/button4"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/button4"
+        android:layout_below="@+id/button4"
+        android:onClick="sedMessage"
+        android:text="send message" />
 
     <Button
+        android:id="@+id/button6"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="close"
-        android:id="@+id/button6"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:layout_below="@+id/button5"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="85dp" />
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/button5"
+        android:layout_marginTop="85dp"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:text="close" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/textViewServiceinfo"
-        android:onClick="onUnregisterServiceD"
-        android:layout_alignRight="@+id/button3"
-        android:layout_alignEnd="@+id/button3"
-        android:layout_marginRight="200dp"
-        android:layout_marginEnd="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/button3"
+        android:layout_alignEnd="@+id/button3"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/button3"
+        android:layout_marginEnd="200dp"
+        android:layout_marginRight="200dp"
+        android:onClick="onUnregisterServiceD" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/ndsServiceStarted"
-        android:layout_below="@+id/button2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/button2" />
+
+    <TextView
         android:id="@+id/serviceState"
-        android:layout_below="@+id/ndsServiceStarted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/ndsServiceStarted" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/onServiceRegistered"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/serviceState"
-        android:layout_toRightOf="@+id/serviceState"
-        android:layout_toEndOf="@+id/serviceState" />
+        android:layout_toEndOf="@+id/serviceState"
+        android:layout_toRightOf="@+id/serviceState" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/messageReceivingFromClient"
-        android:layout_below="@+id/onServiceRegistered"
-        android:layout_toRightOf="@+id/onServiceRegistered"
-        android:layout_toEndOf="@+id/onServiceRegistered" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/onServiceRegistered"
+        android:textColor="@color/colorAccent" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/myRunnableServiceService"
-        android:layout_below="@+id/onServiceRegistered"
-        android:layout_toRightOf="@+id/messageReceivingFromClient"
-        android:layout_toEndOf="@+id/messageReceivingFromClient" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:layout_below="@+id/onServiceRegistered"
+        android:layout_toEndOf="@+id/messageReceivingFromClient"
+        android:layout_toRightOf="@+id/messageReceivingFromClient" />
+
+    <TextView
         android:id="@+id/nsdService"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/onServiceUnregistered"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <TextView
+        android:id="@+id/onServiceUnregistered"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/onServiceUnregistered"
         android:layout_above="@+id/textViewServiceinfo"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
         android:id="@+id/myrunnableServiceRunError"
-        android:layout_below="@+id/onServiceUnregistered"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/onServiceUnregistered" />
+
+    <TextView
         android:id="@+id/DiscoveringStart"
-        android:layout_below="@+id/button5"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/button5" />
+
+    <TextView
         android:id="@+id/onDiscoverongFound"
-        android:layout_below="@+id/DiscoveringStart"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/DiscoveringStart" />
+
+    <TextView
         android:id="@+id/onServiceResolved"
-        android:layout_below="@+id/onDiscoverongFound"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/onDiscoverongFound" />
+
+    <TextView
         android:id="@+id/connecting"
-        android:layout_below="@+id/onServiceResolved"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/onServiceResolved" />
+
+    <TextView
         android:id="@+id/sendingmessage"
-        android:layout_below="@+id/connecting"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/messageState"
-        android:layout_below="@+id/sendingmessage"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/connecting" />
+
+    <TextView
+        android:id="@+id/messageState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/sendingmessage" />
 </RelativeLayout>
